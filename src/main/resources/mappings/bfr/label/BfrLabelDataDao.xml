@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.bfr.label.dao.BfrLabelDataDao">
+    
+	<sql id="bfrLabelDataColumns">
+		a.label_data_id AS "labelDataId",
+		a.lable_id AS "lableId",
+		a.data_id AS "dataId",
+		a.db_type AS "dbType",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="bfrLabelDataJoins">
+	</sql>
+    
+	<select id="get" resultType="BfrLabelData">
+		SELECT 
+			<include refid="bfrLabelDataColumns"/>
+		FROM bfr_label_data a
+		<include refid="bfrLabelDataJoins"/>
+		WHERE a.label_data_id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BfrLabelData">
+		SELECT 
+			<include refid="bfrLabelDataColumns"/>
+		FROM bfr_label_data a
+		<include refid="bfrLabelDataJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="lableId != null and lableId != ''">
+				AND a.lable_id = #{lableId}
+			</if>
+			<if test="dataId != null and dataId != ''">
+				AND a.data_id = #{dataId}
+			</if>
+			<if test="dbType != null and dbType != ''">
+				AND a.db_type = #{dbType}
+			</if>
+			<if test="createBy != null and createBy.id != null and createBy.id != ''">
+				AND a.create_by = #{createBy.id}
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.create_date = #{createDate}
+			</if>
+			<if test="remarks != null and remarks != ''">
+				AND a.remarks = #{remarks}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BfrLabelData">
+		SELECT 
+			<include refid="bfrLabelDataColumns"/>
+		FROM bfr_label_data a
+		<include refid="bfrLabelDataJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bfr_label_data(
+			lable_id,
+			data_id,
+			db_type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{lableId},
+			#{dataId},
+			#{dbType},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bfr_label_data SET 	
+			label_data_id = #{labelDataId},
+			lable_id = #{lableId},
+			data_id = #{dataId},
+			db_type = #{dbType},
+			create_by = #{createBy.id},
+			create_date = #{createDate},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE label_data_id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE bfr_label_data SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE label_data_id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.test.dao.ActIdUserDao">
+    
+	<sql id="actIdUserColumns">
+		a.id_ AS "id",
+		a.rev_ AS "rev",
+		a.first_ AS "first",
+		a.last_ AS "last",
+		a.email_ AS "email",
+		a.pwd_ AS "pwd",
+		a.picture_id_ AS "pictureId"
+	</sql>
+	
+	<sql id="actIdUserJoins">
+	</sql>
+    
+	<select id="get" resultType="ActIdUser">
+		SELECT 
+			<include refid="actIdUserColumns"/>
+		FROM act_id_user a
+		<include refid="actIdUserJoins"/>
+		WHERE a.id_ = #{id}
+	</select>
+	
+	<select id="findList" resultType="ActIdUser">
+		SELECT 
+			<include refid="actIdUserColumns"/>
+		FROM act_id_user a
+		<include refid="actIdUserJoins"/>
+		<where>
+			
+			<if test="id != null and id != ''">
+				AND a.id_ like CONCAT('%',#{id},'%')
+			</if>
+			<if test="rev != null and rev != ''">
+				AND a.rev_ = #{rev}
+			</if>
+			<if test="first != null and first != ''">
+				AND a.first_ = #{first}
+			</if>
+			<if test="last != null and last != ''">
+				AND a.last_ = #{last}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ActIdUser">
+		SELECT 
+			<include refid="actIdUserColumns"/>
+		FROM act_id_user a
+		<include refid="actIdUserJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO act_id_user(
+			id_,
+			rev_,
+			first_,
+			last_,
+			email_,
+			pwd_,
+			picture_id_
+		) VALUES (
+			#{id},
+			#{rev},
+			#{first},
+			#{last},
+			#{email},
+			#{pwd},
+			#{pictureId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE act_id_user SET 	
+			id_ = #{id},
+			rev_ = #{rev},
+			first_ = #{first},
+			last_ = #{last},
+			email_ = #{email},
+			pwd_ = #{pwd},
+			picture_id_ = #{pictureId}
+		WHERE id_ = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM act_id_user
+		WHERE id_ = #{id}
+	</update>
+	
+</mapper>

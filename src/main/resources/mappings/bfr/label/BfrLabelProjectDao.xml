@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.bfr.label.dao.BfrLabelProjectDao">
+    
+	<sql id="bfrLabelProjectColumns">
+		a.label_project_id AS "labelProjectId",
+		a.label_id AS "labelId",
+		a.project_id AS "projectId",
+		a.other AS "other",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="bfrLabelProjectJoins">
+	</sql>
+    
+	<select id="get" resultType="BfrLabelProject">
+		SELECT 
+			<include refid="bfrLabelProjectColumns"/>
+		FROM bfr_label_project a
+		<include refid="bfrLabelProjectJoins"/>
+		WHERE a.label_project_id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BfrLabelProject">
+		SELECT 
+			<include refid="bfrLabelProjectColumns"/>
+		FROM bfr_label_project a
+		<include refid="bfrLabelProjectJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="labelProjectId != null and labelProjectId != ''">
+				AND a.label_project_id = #{labelProjectId}
+			</if>
+			<if test="labelId != null and labelId != ''">
+				AND a.label_id = #{labelId}
+			</if>
+			<if test="projectId != null and projectId != ''">
+				AND a.project_id = #{projectId}
+			</if>
+			<if test="other != null and other != ''">
+				AND a.other = #{other}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BfrLabelProject">
+		SELECT 
+			<include refid="bfrLabelProjectColumns"/>
+		FROM bfr_label_project a
+		<include refid="bfrLabelProjectJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bfr_label_project(
+			label_id,
+			project_id,
+			other,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{labelId},
+			#{projectId},
+			#{other},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bfr_label_project SET 	
+			label_project_id = #{labelProjectId},
+			label_id = #{labelId},
+			project_id = #{projectId},
+			other = #{other},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE label_project_id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE bfr_label_project SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE label_project_id = #{id}
+	</update>
+	
+</mapper>

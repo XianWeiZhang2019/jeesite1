@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.bfr.label.dao.BfrLabelDao">
+    
+	<sql id="bfrLabelColumns">
+		a.label_id AS "labelId",
+		a.label_name AS "labelName",
+		a.other AS "other",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="bfrLabelJoins">
+	</sql>
+    
+	<select id="get" resultType="BfrLabel">
+		SELECT 
+			<include refid="bfrLabelColumns"/>
+		FROM bfr_label a
+		<include refid="bfrLabelJoins"/>
+		WHERE a.label_id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BfrLabel">
+		SELECT 
+			<include refid="bfrLabelColumns"/>
+		FROM bfr_label a
+		<include refid="bfrLabelJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="labelName != null and labelName != ''">
+				AND a.label_name = #{labelName}
+			</if>
+			<if test="other != null and other != ''">
+				AND a.other = #{other}
+			</if>
+			<if test="remarks != null and remarks != ''">
+				AND a.remarks = #{remarks}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BfrLabel">
+		SELECT 
+			<include refid="bfrLabelColumns"/>
+		FROM bfr_label a
+		<include refid="bfrLabelJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bfr_label(
+			label_name,
+			other,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{labelName},
+			#{other},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bfr_label SET 	
+			label_id = #{labelId},
+			label_name = #{labelName},
+			other = #{other},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE bfr_label SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
